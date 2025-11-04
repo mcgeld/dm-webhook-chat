@@ -1,0 +1,24 @@
+{
+  "name": "D&D DM Console",
+  "short_name": "DM Console",
+  "description": "Dungeon Master NPC chat console for sending character messages",
+  "start_url": "./dm-chat-console.html",
+  "display": "standalone",
+  "background_color": "#0f1115",
+  "theme_color": "#0f1115",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
