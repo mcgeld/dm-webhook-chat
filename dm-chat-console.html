@@ -7,6 +7,16 @@
   
   <script>
     // =============================================================================
+    // ⚙️ CONFIGURATION - Set your DM password
+    // =============================================================================
+    // 👉 To set a new password:
+    // 1. Open browser console (F12)
+    // 2. Run: await crypto.subtle.digest('SHA-256', new TextEncoder().encode('YourPassword')).then(h => console.log(Array.from(new Uint8Array(h)).map(b => b.toString(16).padStart(2, '0')).join('')))
+    // 3. Copy the output hash and paste it below
+    // Current password hash is for: "dmpass" (change this!)
+    const PASSWORD_HASH = "6591d1206a95cdfdf2111559326c14fb97c04e43bc499235238ae2254110d347";
+    
+    // =============================================================================
     // ⚙️ CHARACTERS - Add/Edit your NPCs here
     // =============================================================================
     const CHARACTERS = [
@@ -159,9 +169,56 @@
       cursor: pointer;
     }
     select option { background: #0f1420; color: var(--text); }
+    
+    /* Password overlay */
+    #authOverlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999;
+    }
+    #authOverlay.hidden { display: none; }
+    .auth-box {
+      max-width: 400px; width: 100%; margin: 16px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    .auth-box h2 { margin: 0 0 8px; text-align: center; }
+    .auth-box p { color: var(--muted); font-size: 14px; margin: 0 0 20px; text-align: center; }
+    .auth-box input[type="password"] {
+      width: 100%; padding: 12px; font-size: 14px;
+      background: #0f1420; color: var(--text);
+      border: 1px solid var(--border); border-radius: 10px;
+      outline: none; margin-bottom: 12px;
+    }
+    .auth-box button {
+      width: 100%; padding: 12px; font-size: 14px; font-weight: 700;
+      border: 1px solid rgba(106,166,255,.6);
+      background: linear-gradient(180deg, rgba(106,166,255,.22), rgba(164,131,255,.16));
+      color: var(--text); border-radius: 12px; cursor: pointer;
+    }
+    .auth-box .error {
+      color: #ff6b6b; font-size: 13px; margin-top: 8px; text-align: center;
+      display: none;
+    }
+    .auth-box .error.show { display: block; }
   </style>
 </head>
 <body>
+  <!-- Password Authentication Overlay -->
+  <div id="authOverlay">
+    <div class="auth-box">
+      <h2>🔒 DM Access</h2>
+      <p>Enter the DM password to continue</p>
+      <input type="password" id="passwordInput" placeholder="Password" autocomplete="off" />
+      <button id="authBtn">Authenticate</button>
+      <div class="error" id="authError">Incorrect password</div>
+    </div>
+  </div>
+
   <div class="wrap">
     <h2>D&D NPC Sender</h2>
 
@@ -222,6 +279,58 @@
   </div>
 
   <script>
+    // =============================================================================
+    // 🔐 AUTHENTICATION
+    // =============================================================================
+    
+    // Check if already authenticated
+    const authOverlay = document.getElementById('authOverlay');
+    const passwordInput = document.getElementById('passwordInput');
+    const authBtn = document.getElementById('authBtn');
+    const authError = document.getElementById('authError');
+
+    // Helper function to hash password
+    async function hashPassword(password) {
+      const msgBuffer = new TextEncoder().encode(password);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // Check authentication on load
+    if (localStorage.getItem('dm_authenticated') === 'true') {
+      authOverlay.classList.add('hidden');
+    }
+
+    // Handle authentication
+    async function authenticate() {
+      const password = passwordInput.value;
+      const hash = await hashPassword(password);
+      
+      if (hash === PASSWORD_HASH) {
+        localStorage.setItem('dm_authenticated', 'true');
+        authOverlay.classList.add('hidden');
+        authError.classList.remove('show');
+        passwordInput.value = '';
+      } else {
+        authError.classList.add('show');
+        passwordInput.value = '';
+        passwordInput.focus();
+      }
+    }
+
+    authBtn.addEventListener('click', authenticate);
+    passwordInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        authenticate();
+      }
+    });
+
+    // Focus password input on load
+    if (!localStorage.getItem('dm_authenticated')) {
+      passwordInput.focus();
+    }
+
     // =============================================================================
     // ⚙️ CONFIGURATION
     // =============================================================================
