@@ -14,6 +14,7 @@
   
   <!-- Mobile Web App -->
   <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="DM Console">
   <link rel="apple-touch-icon" href="icon180.png">
   
@@ -59,14 +60,6 @@
       --accent-2: #a483ff;
       --border: #232734;
       --hover: #1d2230;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; padding: 16px;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
-      background: radial-gradient(1200px 800px at 20% -10%, #121624 0%, var(--bg) 40%) fixed,
-                  linear-gradient(180deg, #0e1118, var(--bg));
-      color: var(--text);
     }
     * { box-sizing: border-box; }
     body {
@@ -217,6 +210,77 @@
       display: none;
     }
     .auth-box .error.show { display: block; }
+
+    /* Mobile Responsive Styles */
+    @media (max-width: 640px) {
+      body { padding: 12px; }
+      
+      /* Stack controls vertically on mobile */
+      .controls {
+        grid-template-columns: 1fr !important;
+        gap: 12px;
+      }
+      
+      /* Stack override inputs vertically on mobile */
+      .row {
+        grid-template-columns: 1fr !important;
+        gap: 8px;
+      }
+      
+      /* Smaller character grid on mobile */
+      .chars {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        max-height: 110px;
+        gap: 8px;
+      }
+      
+      .char {
+        padding: 6px 4px;
+        gap: 4px;
+      }
+      
+      .char img {
+        width: 48px;
+        height: 48px;
+      }
+      
+      .char span {
+        font-size: 11px;
+      }
+      
+      /* Adjust textarea height for mobile */
+      textarea {
+        height: 100px;
+        font-size: 16px; /* Prevents iOS zoom on focus */
+      }
+      
+      #dmMsg {
+        height: 80px !important;
+      }
+      
+      /* Better touch targets */
+      .mode button, .send {
+        padding: 12px;
+        font-size: 15px;
+      }
+      
+      input[type="text"], select {
+        font-size: 16px; /* Prevents iOS zoom on focus */
+      }
+      
+      .auth-box input[type="password"] {
+        font-size: 16px; /* Prevents iOS zoom on focus */
+      }
+      
+      /* Reduce panel padding on mobile */
+      .panel {
+        padding: 12px;
+      }
+      
+      h2 {
+        font-size: 18px;
+      }
+    }
   </style>
 </head>
 <body>
