@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dm-console-v1';
+const CACHE_NAME = 'dm-console-v2';
 const urlsToCache = [
   './dm-chat-console.html',
   './manifest.json'
